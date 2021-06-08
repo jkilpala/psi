@@ -12,14 +12,15 @@ namespace psi2
         private SpriteBatch _spriteBatch;
 
 
-        List<Texture2D> alienList;
+        //List<Texture2D> alienList;
+        List<GameObject> aliensList;
         Texture2D shipImage;
         Texture2D alienImage;
         Vector2 shipPosition;
 
 
 
-        int numberOfColumns = 5;
+        int numberOfColumns = 10;
         int numberOfRows = 5;
 
 
@@ -35,7 +36,8 @@ namespace psi2
         {
             // TODO: Add your initialization logic here
             shipPosition = new Vector2(100, 150);
-            alienList = new List<Texture2D>();
+            //alienList = new List<Texture2D>();
+            aliensList = new List<GameObject>();
             base.Initialize();
         }
 
@@ -51,7 +53,25 @@ namespace psi2
             {
                 for(int n = 0; n < numberOfColumns; n++)
                 {
-                    alienList.Add(tempTexture);
+                    var tempGameObject = new GameObject();
+                    Color tempColor = Color.White;
+                    if(i == 0)
+                        tempColor = Color.Yellow;
+                    else if(i == 1)
+                        tempColor = Color.Red;
+                    else if(i == 2)
+                        tempColor = Color.HotPink;
+                    else if(i == 3)
+                        tempColor = Color.Green;
+                    else if(i == 4)
+                        tempColor = Color.Blue;
+                    else if(i == 5)
+                        tempColor = Color.BlueViolet;
+
+
+                    tempGameObject.LoadGameObject(tempTexture, new Vector2(n * 40, i * 40), tempColor);
+                    aliensList.Add(tempGameObject);
+                    //alienList.Add(tempTexture);
                 }
             }
 
@@ -62,6 +82,12 @@ namespace psi2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            foreach(var alien in aliensList)
+            {
+                alien.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
 
             // TODO: Add your update logic here
             if(Keyboard.GetState().IsKeyDown(Keys.A))
@@ -91,7 +117,12 @@ namespace psi2
 
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(alienImage, Vector2.Zero, Color.Yellow);
+            foreach(var alien in aliensList)
+            {
+                alien.Draw(_spriteBatch);
+            }
+
+            //_spriteBatch.Draw(alienImage, Vector2.Zero, Color.Yellow);
             _spriteBatch.Draw(shipImage, shipPosition, Color.White);
 
             _spriteBatch.End();
