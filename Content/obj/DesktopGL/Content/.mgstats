@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Koodikoulu/psi2/Content/Alien.png","C:/Koodikoulu/psi2/Content/bin/DesktopGL/Content/Alien.xnb","TextureProcessor","Texture2DContent",184,16469,0.3024582
+"C:/Koodikoulu/psi2/Content/Ship.png","C:/Koodikoulu/psi2/Content/bin/DesktopGL/Content/Ship.xnb","TextureProcessor","Texture2DContent",320,16469,0.0018222
