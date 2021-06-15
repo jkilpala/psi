@@ -11,19 +11,15 @@ namespace psi2
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-
+        EnemyManager enemyManager;
         //List<Texture2D> alienList;
-        List<GameObject> aliensList;
+        //List<GameObject> aliensList;
         Texture2D shipImage;
         Texture2D alienImage;
         Vector2 shipPosition;
 
-
-
-        int numberOfColumns = 10;
-        int numberOfRows = 5;
-
-
+        // int numberOfColumns = 10;
+        // int numberOfRows = 5;
 
         public Game1()
         {
@@ -34,10 +30,12 @@ namespace psi2
 
         protected override void Initialize()
         {
+            enemyManager = new EnemyManager();
+            enemyManager.Initialize();
             // TODO: Add your initialization logic here
             shipPosition = new Vector2(100, 150);
             //alienList = new List<Texture2D>();
-            aliensList = new List<GameObject>();
+            //aliensList = new List<GameObject>();
             base.Initialize();
         }
 
@@ -47,33 +45,33 @@ namespace psi2
 
             shipImage = Content.Load<Texture2D>("Ship");
             alienImage = Content.Load<Texture2D>("Alien");
+            enemyManager.LoadContent(Content);
+            // var tempTexture = Content.Load<Texture2D>("Alien");
+            // for(int i = 0; i < numberOfRows; i++)
+            // {
+            //     for(int n = 0; n < numberOfColumns; n++)
+            //     {
+            //         var tempGameObject = new GameObject();
+            //         Color tempColor = Color.White;
+            //         if(i == 0)
+            //             tempColor = Color.Yellow;
+            //         else if(i == 1)
+            //             tempColor = Color.Red;
+            //         else if(i == 2)
+            //             tempColor = Color.HotPink;
+            //         else if(i == 3)
+            //             tempColor = Color.Green;
+            //         else if(i == 4)
+            //             tempColor = Color.Blue;
+            //         else if(i == 5)
+            //             tempColor = Color.BlueViolet;
 
-            var tempTexture = Content.Load<Texture2D>("Alien");
-            for(int i = 0; i < numberOfRows; i++)
-            {
-                for(int n = 0; n < numberOfColumns; n++)
-                {
-                    var tempGameObject = new GameObject();
-                    Color tempColor = Color.White;
-                    if(i == 0)
-                        tempColor = Color.Yellow;
-                    else if(i == 1)
-                        tempColor = Color.Red;
-                    else if(i == 2)
-                        tempColor = Color.HotPink;
-                    else if(i == 3)
-                        tempColor = Color.Green;
-                    else if(i == 4)
-                        tempColor = Color.Blue;
-                    else if(i == 5)
-                        tempColor = Color.BlueViolet;
 
-
-                    tempGameObject.LoadGameObject(tempTexture, new Vector2(n * 40, i * 40), tempColor);
-                    aliensList.Add(tempGameObject);
-                    //alienList.Add(tempTexture);
-                }
-            }
+            //         tempGameObject.LoadGameObject(tempTexture, new Vector2(n * 40, i * 40), tempColor);
+            //         aliensList.Add(tempGameObject);
+            //         //alienList.Add(tempTexture);
+            //     }
+            // }
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,10 +81,11 @@ namespace psi2
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            foreach(var alien in aliensList)
-            {
-                alien.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
+            enemyManager.Update(gameTime);
+            // foreach(var alien in aliensList)
+            // {
+            //     alien.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            // }
 
 
             // TODO: Add your update logic here
@@ -116,11 +115,11 @@ namespace psi2
             GraphicsDevice.Clear(Color.DarkOrchid);
 
             _spriteBatch.Begin();
-
-            foreach(var alien in aliensList)
-            {
-                alien.Draw(_spriteBatch);
-            }
+            enemyManager.Draw(_spriteBatch);
+            // foreach(var alien in aliensList)
+            // {
+            //     alien.Draw(_spriteBatch);
+            // }
 
             //_spriteBatch.Draw(alienImage, Vector2.Zero, Color.Yellow);
             _spriteBatch.Draw(shipImage, shipPosition, Color.White);
