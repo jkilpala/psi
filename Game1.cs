@@ -21,6 +21,16 @@ namespace psi2
         // int numberOfColumns = 10;
         // int numberOfRows = 5;
 
+        List<Bullet> bulletList;
+        List<Bullet> bulletsToDestroy;
+        Texture2D storedPewPewImage;
+        bool hasShot = false;
+
+        float shootDelay = 0.4f;
+        float shootTimer = 0.0f;
+
+
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -36,6 +46,8 @@ namespace psi2
             shipPosition = new Vector2(100, 150);
             //alienList = new List<Texture2D>();
             //aliensList = new List<GameObject>();
+            bulletList = new List<Bullet>();
+            bulletsToDestroy = new List<Bullet>();
             base.Initialize();
         }
 
@@ -45,6 +57,7 @@ namespace psi2
 
             shipImage = Content.Load<Texture2D>("Ship");
             alienImage = Content.Load<Texture2D>("Alien");
+            storedPewPewImage = Content.Load<Texture2D>("PewPew");
             enemyManager.LoadContent(Content);
             // var tempTexture = Content.Load<Texture2D>("Alien");
             // for(int i = 0; i < numberOfRows; i++)
@@ -82,6 +95,10 @@ namespace psi2
                 Exit();
 
             enemyManager.Update(gameTime);
+            foreach(var bullet in bulletList)
+            {
+                bullet.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
             // foreach(var alien in aliensList)
             // {
             //     alien.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -106,7 +123,50 @@ namespace psi2
                 shipPosition.Y += 100.0f * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             
-            
+            // if(Keyboard.GetState().IsKeyDown(Keys.Space))
+            // {
+            //     //Shoot();
+            //     hasShot = true;
+            // }
+            // if(Keyboard.GetState().IsKeyUp(Keys.Space))
+            // {
+            //     if(hasShot)
+            //     {
+            //         Shoot();
+            //         hasShot = false;
+            //     }
+            //     //Shoot();
+            // }
+            if(Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                shootTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if(shootTimer <= 0.0f)
+                {
+                    Shoot();
+                    shootTimer = shootDelay;
+                }
+            }
+            if(Keyboard.GetState().IsKeyUp(Keys.Space))
+            {
+                shootTimer = 0.0f;
+            }
+
+            foreach(var bullet in bulletList)
+            {
+                if(!bullet.IsAlive())
+                {
+                    bulletsToDestroy.Add(bullet);
+                }
+            }
+            if(bulletsToDestroy.Count > 0)
+            {
+                foreach(var bullet in bulletsToDestroy)
+                {
+                    bulletList.Remove(bullet);
+                }
+                bulletsToDestroy.Clear();
+            }
+
             base.Update(gameTime);
         }
 
@@ -116,6 +176,11 @@ namespace psi2
 
             _spriteBatch.Begin();
             enemyManager.Draw(_spriteBatch);
+
+            foreach(var bullet in bulletList)
+            {
+                bullet.Draw(_spriteBatch);
+            }
             // foreach(var alien in aliensList)
             // {
             //     alien.Draw(_spriteBatch);
@@ -129,6 +194,11 @@ namespace psi2
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+        }
+
+        public void Shoot()
+        {
+            bulletList.Add(new Bullet(storedPewPewImage, shipPosition));
         }
     }
 }
