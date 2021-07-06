@@ -9,6 +9,11 @@ namespace psi2
     {
         List<GameObject> aliensList;
         List<GameObject> aliensToDestroyList;
+        
+        List<AnimatedSprite> explosionList;
+        List<AnimatedSprite> explosionToDestroyList;
+        Texture2D explosionSheet;
+
         int numberOfColumns = 10;
         int numberOfRows = 5;
 
@@ -19,10 +24,14 @@ namespace psi2
         {
             aliensList = new List<GameObject>();
             aliensToDestroyList = new List<GameObject>();
+
+            explosionList = new List<AnimatedSprite>();
+            explosionToDestroyList = new List<AnimatedSprite>();
         }
 
         public void LoadContent(ContentManager content)
         {
+            explosionSheet = content.Load<Texture2D>("animation13");
             var tempTexture = content.Load<Texture2D>("Alien");
             for(int i = 0; i < numberOfRows; i++)
             {
@@ -79,9 +88,29 @@ namespace psi2
                 }
                 aliensToDestroyList.Clear();
             }
+            foreach(var exp in explosionList)
+            {
+                if(exp.Update((float)gameTime.ElapsedGameTime.TotalSeconds))
+                {
+                    explosionToDestroyList.Add(exp);
+                }
+            }
+
+            if(explosionToDestroyList.Count > 0)
+            {
+                foreach(var exp in explosionToDestroyList)
+                {
+                    explosionList.Remove(exp);
+                }
+                explosionToDestroyList.Clear();
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
+            foreach(var exp in explosionList)
+            {
+                exp.Draw(spriteBatch);
+            }
             foreach(var alien in aliensList)
             {
                 alien.Draw(spriteBatch);
@@ -94,6 +123,7 @@ namespace psi2
             {
                 if(Vector2.Distance(alien.position, pos) < distance)
                 {
+                    explosionList.Add(new AnimatedSprite(explosionSheet, alien.position, 64,64,0.2f,3,false));
                     aliensToDestroyList.Add(alien);
                     return true;
                 }

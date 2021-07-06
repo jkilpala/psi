@@ -29,7 +29,7 @@ namespace psi2
         float shootDelay = 0.4f;
         float shootTimer = 0.0f;
 
-
+        AnimatedSprite testExplosion;
 
         public Game1()
         {
@@ -55,6 +55,15 @@ namespace psi2
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            testExplosion = new AnimatedSprite(
+                Content.Load<Texture2D>("animation13"),
+                Vector2.One,
+                  64,
+                  64,
+                  2,
+                  3,
+                  true
+                  );
             shipImage = Content.Load<Texture2D>("Ship");
             alienImage = Content.Load<Texture2D>("Alien");
             storedPewPewImage = Content.Load<Texture2D>("PewPew");
@@ -94,6 +103,7 @@ namespace psi2
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            testExplosion.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             enemyManager.Update(gameTime);
             foreach(var bullet in bulletList)
             {
@@ -179,6 +189,7 @@ namespace psi2
             GraphicsDevice.Clear(Color.DarkOrchid);
 
             _spriteBatch.Begin();
+            testExplosion.Draw(_spriteBatch);
             enemyManager.Draw(_spriteBatch);
 
             foreach(var bullet in bulletList)
