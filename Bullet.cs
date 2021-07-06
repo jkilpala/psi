@@ -6,7 +6,7 @@ namespace psi2
     class Bullet
     {
         Texture2D image;
-        Vector2 position;
+        public Vector2 position;
 
         bool isAlive = true;
 

@@ -98,6 +98,10 @@ namespace psi2
             foreach(var bullet in bulletList)
             {
                 bullet.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                if(enemyManager.checkCollision(bullet.position, 64))
+                {
+                    bulletsToDestroy.Add(bullet);
+                }
             }
             // foreach(var alien in aliensList)
             // {

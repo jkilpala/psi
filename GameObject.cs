@@ -6,7 +6,7 @@ namespace psi2
     class GameObject
     {
         Texture2D image;
-        Vector2 position;
+        public Vector2 position;
         Color color;
         float speed = 50;
 

@@ -8,6 +8,7 @@ namespace psi2
     class EnemyManager
     {
         List<GameObject> aliensList;
+        List<GameObject> aliensToDestroyList;
         int numberOfColumns = 10;
         int numberOfRows = 5;
 
@@ -17,6 +18,7 @@ namespace psi2
         public void Initialize()
         {
             aliensList = new List<GameObject>();
+            aliensToDestroyList = new List<GameObject>();
         }
 
         public void LoadContent(ContentManager content)
@@ -68,6 +70,15 @@ namespace psi2
                     changeDirection = true;
                 }
             }
+
+            if(aliensToDestroyList.Count > 0)
+            {
+                foreach(var alien in aliensToDestroyList)
+                {
+                    aliensList.Remove(alien);
+                }
+                aliensToDestroyList.Clear();
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -75,6 +86,19 @@ namespace psi2
             {
                 alien.Draw(spriteBatch);
             }
+        }
+
+        public bool checkCollision(Vector2 pos, float distance)
+        {
+            foreach(var alien in aliensList)
+            {
+                if(Vector2.Distance(alien.position, pos) < distance)
+                {
+                    aliensToDestroyList.Add(alien);
+                    return true;
+                }
+            }
+            return false;
         }
 
     }
